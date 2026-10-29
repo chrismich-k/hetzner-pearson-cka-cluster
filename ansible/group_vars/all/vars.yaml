@@ -1,0 +1,11 @@
+custom_ansible_venv_path: "/opt/ansible_venv"
+custom_ansible_python_interpreter: "{{ custom_ansible_venv_path }}/bin/python"
+
+course_repo_url: "https://github.com/sandervanvugt/cka"
+course_repo_dest: "/root/cka"
+course_repo_version: "HEAD"
+
+# true installs `setup-kubetools-previousversion.sh` (for a later upgrade),
+# false installs `setup-kubetools.sh` (for using current version right away).
+course_kubetools_previousversion: true
+course_kubetools_script: "{{ 'setup-kubetools-previousversion.sh' if course_kubetools_previousversion | bool else 'setup-kubetools.sh' }}"

@@ -1,0 +1,66 @@
+---
+- name: Run course setup scripts
+  block:
+    # setup-container.sh symlinks the runc profile into this dir, which
+    # Ubuntu 26.04 no longer ships - without it the profile stays enabled
+    # after a reboot (the script doesn't stop on the error)
+    - name: Create apparmor disable directory
+      ansible.builtin.file:
+        path: /etc/apparmor.d/disable
+        state: directory
+        mode: "0755"
+
+    - name: Run setup-container.sh
+      ansible.builtin.command:
+        cmd: ./setup-container.sh
+        chdir: "{{ course_repo_dest }}"
+        # not /tmp/container.txt (the script's own marker) - /tmp is
+        # wiped on reboot and the script would run again
+        creates: /usr/local/bin/containerd
+
+    # the scripts never exit non-zero, so check the result explicitly
+    - name: Ensure containerd is running
+      ansible.builtin.systemd:
+        name: containerd
+        state: started
+        enabled: true
+
+    # setup-kubetools*.sh refuses to run without it, and it's gone if the
+    # node was rebooted after setup-container.sh
+    - name: Ensure setup-container.sh marker exists
+      ansible.builtin.file:
+        path: /tmp/container.txt
+        state: touch
+        modification_time: preserve
+        access_time: preserve
+
+    - name: Run {{ course_kubetools_script }}
+      ansible.builtin.command:
+        cmd: "./{{ course_kubetools_script }}"
+        chdir: "{{ course_repo_dest }}"
+        creates: /usr/bin/kubeadm
+
+    # the script assumes crictl comes in as a kubeadm dependency, which the
+    # pkgs.k8s.io packages no longer pull in - its final "crictl config"
+    # then fails with "sudo: 'crictl': command not found". The package comes
+    # from the pkgs.k8s.io repo the script just added
+    - name: Install cri-tools
+      apt:
+        name: cri-tools
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    # what the script's failed "crictl config --set runtime-endpoint=..."
+    # would have written
+    - name: Configure crictl runtime endpoint
+      ansible.builtin.copy:
+        dest: /etc/crictl.yaml
+        content: |
+          runtime-endpoint: unix:///run/containerd/containerd.sock
+        mode: "0644"
+
+    - name: Check kubeadm is installed
+      ansible.builtin.command: kubeadm version -o short
+      changed_when: false
+      check_mode: false

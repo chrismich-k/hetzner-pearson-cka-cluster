@@ -1,0 +1,55 @@
+# Hetzner Cloud Credentials
+hcloud_token = "yoursecrethcloudtoken"
+
+# ssh_key at Hetzner
+ssh_key_name = "cka-pearson"
+# local path to key
+default_ssh_key_path = "/home/username/.ssh/id_ed25519"
+
+# Name des neu anzulegenden Hetzner Cloud Networks
+hetzner_network_name = "cka-k8s-net"
+
+# IP ranges for private net and its subnets
+ip_range_net_private = "10.0.0.0/16"
+ip_range_sub_hcloud  = "10.0.1.0/24"
+
+hcloud_network_zone  = "eu-central"
+hcloud_location      = "fsn1"
+server_type          = "cx23" # "cpx22"  # whatever available
+hcloud_node_image    = "ubuntu-26.04"  # distribution to use
+
+# Main definition of Hetzner Servers to be used as Masters or Agents
+primary_control_node = "control1"  # Exam 1
+# primary_control_node = "control"  # Exam 2
+
+cluster_nodes = {
+  # for CKA Sample Exam 1: control1, control2, control3
+  "control1" = {
+    role = "control"
+    ipv4_priv = "10.0.1.1"
+  }
+  "control2" = {
+    role = "control"
+    ipv4_priv = "10.0.1.2"
+  }
+  "control3" = {
+    role = "control"
+    ipv4_priv = "10.0.1.3"
+  }
+
+#  # for CKA Sample Exam 2: control
+#  "control" = {
+#    role = "control"
+#    ipv4_priv = "10.0.1.1"
+#  }
+
+  # for both Sample Exams: worker1, worker2
+  "worker1" = {
+    role = "worker"
+    ipv4_priv = "10.0.1.4"
+  }
+  "worker2" = {
+    role = "worker"
+    ipv4_priv = "10.0.1.5"
+  }
+}

@@ -1,0 +1,17 @@
+---
+- name: Clone course repository
+  block:
+    - name: Install git via apt
+      apt:
+        name: git
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Clone course repository
+      ansible.builtin.git:
+        repo: "{{ course_repo_url }}"
+        dest: "{{ course_repo_dest }}"
+        version: "{{ course_repo_version }}"
+        # don't throw away local edits made while working through the labs
+        update: false

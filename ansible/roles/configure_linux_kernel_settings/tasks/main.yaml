@@ -1,0 +1,31 @@
+---
+- name: Configuring Linux Kernel Settings
+  block:
+    # the net.bridge.* sysctls only exist once br_netfilter is loaded;
+    # overlay is needed by containerd's overlayfs snapshotter
+    - name: Load kernel modules for containerd
+      community.general.modprobe:
+        name: "{{ item }}"
+        state: present
+        persistent: present
+      loop:
+        - overlay
+        - br_netfilter
+
+    - name: Set bridge-netfilter
+      ansible.posix.sysctl:
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+        sysctl_file: /etc/sysctl.d/99-kubernetes-cri.conf
+        sysctl_set: true
+        reload: true
+      loop:
+        - { name: "net.bridge.bridge-nf-call-iptables", value: "1" }
+        - { name: "net.ipv4.ip_forward", value: "1" }
+        - { name: "net.bridge.bridge-nf-call-ip6tables", value: "1" }
+        # course says net.ipv6.ip_forward, but that key doesn't exist in any
+        # kernel - sysctl --system just warns and skips it, so it was a no-op
+        # - { name: "net.ipv6.ip_forward", value: "1" }
+        # actual IPv6 equivalent; not needed for an IPv4-only cluster and it
+        # makes the kernel ignore router advertisements (breaks SLAAC/RA)
+        # - { name: "net.ipv6.conf.all.forwarding", value: "1" }
