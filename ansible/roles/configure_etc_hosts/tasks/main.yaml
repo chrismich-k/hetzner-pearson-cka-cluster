@@ -1,0 +1,31 @@
+---
+- name: Configure /etc/hosts
+  block:
+    # public IPs on purpose (simpler than the private Hetzner network);
+    # ansible_host is the public ipv4, or ipv6 for IPv6-only nodes
+    - name: Add all cluster nodes to /etc/hosts
+      ansible.builtin.blockinfile:
+        path: /etc/hosts
+        marker: "# {mark} ANSIBLE MANAGED - cka cluster nodes"
+        block: |
+          {% for host in groups['control_nodes'] + groups['worker_nodes'] %}
+          {{ hostvars[host].ansible_host }} {{ host }}
+          {% endfor %}
+
+    # with cloud-init's manage_etc_hosts (as on Hetzner images) /etc/hosts
+    # is regenerated from this template on every boot - without the same
+    # block there, the entries above would be gone after a reboot
+    - name: Check for cloud-init hosts template
+      ansible.builtin.stat:
+        path: /etc/cloud/templates/hosts.debian.tmpl
+      register: configure_etc_hosts_cloud_template
+
+    - name: Add all cluster nodes to cloud-init hosts template
+      ansible.builtin.blockinfile:
+        path: /etc/cloud/templates/hosts.debian.tmpl
+        marker: "# {mark} ANSIBLE MANAGED - cka cluster nodes"
+        block: |
+          {% for host in groups['control_nodes'] + groups['worker_nodes'] %}
+          {{ hostvars[host].ansible_host }} {{ host }}
+          {% endfor %}
+      when: configure_etc_hosts_cloud_template.stat.exists

@@ -27,6 +27,12 @@
   roles:
     - role: configure_linux_kernel_settings
 
+- name: Configure /etc/hosts
+  hosts: control_nodes:worker_nodes
+  become: true
+  roles:
+    - role: configure_etc_hosts
+
 - name: Clone course repository
   hosts: control_nodes:worker_nodes
   become: true
