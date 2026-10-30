@@ -23,7 +23,6 @@ variable "hcloud_node_image" {
 variable "cluster_nodes" {
   type = map(object({
     role         = string # "control" or "worker"
-    ipv4_priv    = string # pinned private IP, required for every node
   }))
 
 }
@@ -38,19 +37,6 @@ variable "primary_control_node" {
     condition     = contains([for k, v in var.cluster_nodes : k if v.role == "control"], var.primary_control_node)
     error_message = "primary_control must name an existing cluster_nodes entry with role = \"control\"."
   }
-}
-
-variable "hetzner_network_name" {
-  type        = string
-  description = "the name of the private network that will be created in the Hetzner Cloud"
-}
-
-variable "ip_range_net_private" {
-  default = "10.0.0.0/16"
-}
-
-variable "ip_range_sub_hcloud" {
-  default = "10.0.1.0/24"
 }
 
 variable "hcloud_location" {

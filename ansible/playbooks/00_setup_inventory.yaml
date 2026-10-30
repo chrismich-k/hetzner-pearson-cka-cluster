@@ -26,7 +26,6 @@
         groups: "{{ ['control_nodes'] + (['control_node_bootstrap'] if item.key == tf_out.primary_control_node.value else ['control_nodes_join']) }}"
         ansible_host: "{{ item.value.ipv4 | default(item.value.ipv6, true) }}"
         ansible_ssh_private_key_file: "{{ item.value.ssh_key_path }}"
-        ipv4_priv: "{{ item.value.ipv4_priv }}"
         ipv4: "{{ item.value.ipv4 }}"
         ipv6: "{{ item.value.ipv6 }}"
         provider_id: "{{ item.value.provider_id }}"
@@ -62,7 +61,6 @@
         groups: worker_nodes
         ansible_host: "{{ item.value.ipv4 | default(item.value.ipv6, true) }}"
         ansible_ssh_private_key_file: "{{ item.value.ssh_key_path }}"
-        ipv4_priv: "{{ item.value.ipv4_priv }}"
         ipv4: "{{ item.value.ipv4 }}"
         ipv6: "{{ item.value.ipv6 }}"
         provider_id: "{{ item.value.provider_id }}"

@@ -8,7 +8,6 @@ locals {
       provider_id = s.id
       ipv4        = s.ipv4_address
       ipv6        = s.ipv6_address
-      ipv4_priv   = hcloud_server_network.control_node_network[k].ip
     }
   }
 
@@ -19,7 +18,6 @@ locals {
       wan_ip         = f.ipv4
       ipv4           = f.ipv4
       ipv6           = f.ipv6
-      ipv4_priv      = f.ipv4_priv
       ssh_key_path   = var.default_ssh_key_path
       provider_id    = tostring(f.provider_id)
     }
@@ -35,7 +33,6 @@ locals {
       provider_id = s.id
       ipv4        = s.ipv4_address
       ipv6        = s.ipv6_address
-      ipv4_priv   = hcloud_server_network.worker_node_network[k].ip
     }
   }
 
@@ -46,11 +43,8 @@ locals {
       wan_ip         = f.ipv4
       ipv4           = f.ipv4
       ipv6           = f.ipv6
-      ipv4_priv      = f.ipv4_priv
       ssh_key_path   = var.default_ssh_key_path
       provider_id    = tostring(f.provider_id)
     }
   }
-
-  hcloud_network_mask = split("/", hcloud_network.k8s_net.ip_range)[1]
 }
