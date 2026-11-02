@@ -1,8 +1,12 @@
 custom_ansible_venv_path: "/opt/ansible_venv"
 custom_ansible_python_interpreter: "{{ custom_ansible_venv_path }}/bin/python"
 
+# normal login user with passwordless sudo, as in the course ("student")
+# or the killer.sh exam simulator ("candidate")
+course_user: "student"
+
 course_repo_url: "https://github.com/sandervanvugt/cka"
-course_repo_dest: "/root/cka"
+course_repo_dest: "/home/{{ course_user }}/cka"
 course_repo_version: "HEAD"
 
 # true installs `setup-kubetools-previousversion.sh` (for a later upgrade),

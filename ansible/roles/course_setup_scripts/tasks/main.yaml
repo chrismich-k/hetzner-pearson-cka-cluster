@@ -60,6 +60,14 @@
           runtime-endpoint: unix:///run/containerd/containerd.sock
         mode: "0644"
 
+    # the scripts run as root and download their tarballs into the repo
+    - name: Hand course repository back to course user
+      ansible.builtin.file:
+        path: "{{ course_repo_dest }}"
+        owner: "{{ course_user }}"
+        group: "{{ course_user }}"
+        recurse: true
+
     - name: Check kubeadm is installed
       ansible.builtin.command: kubeadm version -o short
       changed_when: false

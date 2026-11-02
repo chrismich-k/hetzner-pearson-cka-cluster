@@ -33,6 +33,12 @@
   roles:
     - role: configure_etc_hosts
 
+- name: Configure course user
+  hosts: control_nodes:worker_nodes
+  become: true
+  roles:
+    - role: course_user
+
 - name: Clone course repository
   hosts: control_nodes:worker_nodes
   become: true

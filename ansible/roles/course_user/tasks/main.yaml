@@ -1,0 +1,76 @@
+---
+- name: Configure course user
+  block:
+    - name: Create course user
+      ansible.builtin.user:
+        name: "{{ course_user }}"
+        shell: /bin/bash
+        create_home: true
+
+    # like in the course and the exam: sudo without password prompts
+    - name: Allow passwordless sudo for course user
+      ansible.builtin.copy:
+        dest: "/etc/sudoers.d/{{ course_user }}"
+        content: "{{ course_user }} ALL=(ALL) NOPASSWD: ALL\n"
+        mode: "0440"
+        validate: visudo -cf %s
+
+    # the key Hetzner put there for root - so the same private key logs in
+    # as root (Ansible) or as the course user
+    - name: Read root's authorized_keys
+      ansible.builtin.slurp:
+        src: /root/.ssh/authorized_keys
+      register: course_user_root_authorized_keys
+
+    - name: Authorize root's keys for course user
+      ansible.posix.authorized_key:
+        user: "{{ course_user }}"
+        key: "{{ course_user_root_authorized_keys.content | b64decode }}"
+        state: present
+
+    # node-to-node ssh as the course user, from the primary control node only.
+    # Ansible never logs in with this key, and the private part stays there
+    - name: Generate ssh key for course user on primary control node
+      ansible.builtin.user:
+        name: "{{ course_user }}"
+        generate_ssh_key: true
+        ssh_key_type: ed25519
+        ssh_key_file: .ssh/id_ed25519
+        ssh_key_comment: "{{ course_user }}@{{ inventory_hostname }}"
+      register: course_user_ssh_key
+      when: inventory_hostname in groups['control_node_bootstrap']
+
+    - name: Authorize primary control node's key for course user
+      ansible.posix.authorized_key:
+        user: "{{ course_user }}"
+        key: "{{ hostvars[groups['control_node_bootstrap'][0]].course_user_ssh_key.ssh_public_key }}"
+        state: present
+
+    # so "ssh worker1" doesn't ask to accept the host key. Scanned by name -
+    # resolves through the /etc/hosts entries of configure_etc_hosts
+    - name: Scan host keys of all nodes from primary control node
+      ansible.builtin.command: "ssh-keyscan -t ed25519 {{ item }}"
+      register: course_user_host_keys
+      changed_when: false
+      check_mode: false
+      loop: "{{ groups['control_nodes'] + groups['worker_nodes'] }}"
+      when: inventory_hostname in groups['control_node_bootstrap']
+
+    - name: Add host keys to course user's known_hosts
+      ansible.builtin.known_hosts:
+        path: "/home/{{ course_user }}/.ssh/known_hosts"
+        name: "{{ item.item }}"
+        key: "{{ item.stdout }}"
+        state: present
+      loop: "{{ course_user_host_keys.results }}"
+      loop_control:
+        label: "{{ item.item }}"
+      when: inventory_hostname in groups['control_node_bootstrap']
+
+    - name: Fix ownership of course user's known_hosts
+      ansible.builtin.file:
+        path: "/home/{{ course_user }}/.ssh/known_hosts"
+        owner: "{{ course_user }}"
+        group: "{{ course_user }}"
+        mode: "0644"
+      when: inventory_hostname in groups['control_node_bootstrap']

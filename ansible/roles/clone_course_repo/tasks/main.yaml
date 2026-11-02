@@ -8,6 +8,14 @@
         update_cache: true
         cache_valid_time: 3600
 
+    # cloned as root and handed over below; skipped once it exists, since
+    # git refuses to work as root in a repo owned by another user
+    # ("dubious ownership")
+    - name: Check for existing course repository
+      ansible.builtin.stat:
+        path: "{{ course_repo_dest }}/.git"
+      register: clone_course_repo_git
+
     - name: Clone course repository
       ansible.builtin.git:
         repo: "{{ course_repo_url }}"
@@ -15,3 +23,11 @@
         version: "{{ course_repo_version }}"
         # don't throw away local edits made while working through the labs
         update: false
+      when: not clone_course_repo_git.stat.exists
+
+    - name: Hand course repository over to course user
+      ansible.builtin.file:
+        path: "{{ course_repo_dest }}"
+        owner: "{{ course_user }}"
+        group: "{{ course_user }}"
+        recurse: true
