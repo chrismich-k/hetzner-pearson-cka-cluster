@@ -7,7 +7,7 @@
 # create new cloud instance, always public ipv4+ipv6
 resource "hcloud_server" "control_nodes" {
   for_each = {
-    for k, v in var.cluster_nodes : k => v if v.role == "control"
+    for k, v in local.cluster_nodes : k => v if v.role == "control"
   }
 
   name        = each.key
@@ -22,7 +22,7 @@ resource "hcloud_server" "control_nodes" {
 # create new cloud instance, always public ipv4+ipv6
 resource "hcloud_server" "worker_nodes" {
   for_each = {
-    for k, v in var.cluster_nodes : k => v if v.role == "worker"
+    for k, v in local.cluster_nodes : k => v if v.role == "worker"
   }
 
   name        = each.key

@@ -25,7 +25,7 @@ locals {
 
   ## group agent nodes
   agent_nodes = {
-    for k, v in var.cluster_nodes : k => v if v.role == "agent"
+    for k, v in local.cluster_nodes : k => v if v.role == "agent"
   }
 
   worker_facts ={

@@ -20,22 +20,14 @@ variable "hcloud_node_image" {
   default     = "ubuntu-26.04"
 }
 
-variable "cluster_nodes" {
-  type = map(object({
-    role         = string # "control" or "worker"
-  }))
-
-}
-
-# cluster_nodes key of the prinary cobtrol node that starts the embedded-etcd cluster;
-# every other control node joins through it.
-variable "primary_control_node" {
+variable "exam" {
   type        = string
-  description = "cluster_nodes key of the control node that bootstraps the cluster"
+  description = "cluster layout to provision, see exams.tf"
+  default     = "exam1"
 
   validation {
-    condition     = contains([for k, v in var.cluster_nodes : k if v.role == "control"], var.primary_control_node)
-    error_message = "primary_control must name an existing cluster_nodes entry with role = \"control\"."
+    condition     = contains(["exam1", "exam2"], var.exam)
+    error_message = "exam must be \"exam1\" or \"exam2\"."
   }
 }
 
@@ -52,4 +44,16 @@ variable "server_type" {
 variable "hcloud_network_zone" {
   type    = string
   default = "eu-central"
+}
+
+variable "k8s_api_lb_name" {
+  type        = string
+  description = "name of the Hetzner load balancer in front of the kube-apiservers"
+  default     = "cka-k8s-api"
+}
+
+variable "k8s_api_lb_type" {
+  type        = string
+  description = "Hetzner load balancer type"
+  default     = "lb11" # smallest one, plenty for a lab cluster
 }
