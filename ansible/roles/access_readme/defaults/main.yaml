@@ -1,0 +1,4 @@
+---
+# written next to the repo's README.md, e.g. README_EXAM-1.txt for exam1
+access_readme_dir: "{{ playbook_dir }}/.."
+access_readme_file: "README_{{ tf_out.exam.value | regex_replace('^exam', 'EXAM-') }}.txt"

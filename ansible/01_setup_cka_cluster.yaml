@@ -50,3 +50,11 @@
   become: true
   roles:
     - role: course_setup_scripts
+
+# last, so the README only shows up once the nodes are ready for kubeadm
+- name: Write README with node access
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  roles:
+    - role: access_readme

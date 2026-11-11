@@ -30,3 +30,8 @@ output "k8s_api_lb" {
     port = hcloud_load_balancer_service.k8s_api[0].listen_port
   } : null
 }
+
+# "exam1" | "exam2" - e.g. for naming the access README Ansible writes
+output "exam" {
+  value = var.exam
+}

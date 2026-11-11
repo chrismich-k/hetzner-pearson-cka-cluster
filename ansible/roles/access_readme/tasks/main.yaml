@@ -1,0 +1,24 @@
+---
+# runs on localhost: needs tf_out (00_setup_inventory.yaml) and the
+# hostvars of the node groups built from it
+- name: Write README with node access and cluster init command
+  ansible.builtin.template:
+    src: README_EXAM.txt.j2
+    dest: "{{ access_readme_dir }}/{{ access_readme_file }}"
+    mode: "0644"
+
+# after switching exam1 <-> exam2 the other layout's README is stale
+- name: Find READMEs of the other exam layout
+  ansible.builtin.find:
+    paths: "{{ access_readme_dir }}"
+    patterns: "README_EXAM-*.txt"
+    excludes: "{{ access_readme_file }}"
+  register: stale_readmes
+
+- name: Remove READMEs of the other exam layout
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ stale_readmes.files }}"
+  loop_control:
+    label: "{{ item.path | basename }}"

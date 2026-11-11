@@ -1,0 +1,18 @@
+k8s cluster setup for {{ tf_out.exam.value }}:
+{% for node in (groups['control_nodes'] | sort) + (groups['worker_nodes'] | sort) %}
+
+{{ node }}:
+ssh -i {{ hostvars[node].ansible_ssh_private_key_file | regex_replace('^' ~ lookup('env', 'HOME'), '~') }} {{ course_user }}@{{ hostvars[node].ansible_host }}
+{% endfor %}
+{% if tf_out.k8s_api_lb.value %}
+
+IP and port of load balancer for control nodes:
+{{ tf_out.k8s_api_lb.value.ipv4 }}:{{ tf_out.k8s_api_lb.value.port }}
+
+install cluster for first control node ({{ tf_out.primary_control_node.value }}):
+kubeadm init --control-plane-endpoint {{ tf_out.k8s_api_lb.value.ipv4 }} --upload-certs
+{% else %}
+
+install cluster on the control node ({{ tf_out.primary_control_node.value }}):
+kubeadm init
+{% endif %}
