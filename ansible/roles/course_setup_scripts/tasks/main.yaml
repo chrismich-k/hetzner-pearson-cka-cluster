@@ -1,9 +1,11 @@
 ---
 - name: Run course setup scripts
   block:
-    # setup-container.sh symlinks the runc profile into this dir, which
-    # Ubuntu 26.04 no longer ships - without it the profile stays enabled
-    # after a reboot (the script doesn't stop on the error)
+    # only so setup-container.sh's "ln -s ... /etc/apparmor.d/disable/"
+    # doesn't fail (missing on Hetzner's 26.04 image). The runc profile it
+    # disables doesn't matter here anyway: it attaches to the distro's
+    # /usr/{bin,sbin}/runc, while the script installs /usr/local/sbin/runc,
+    # which runs unconfined either way
     - name: Create apparmor disable directory
       ansible.builtin.file:
         path: /etc/apparmor.d/disable
@@ -15,10 +17,18 @@
         cmd: ./setup-container.sh
         chdir: "{{ course_repo_dest }}"
         # not /tmp/container.txt (the script's own marker) - /tmp is
-        # wiped on reboot and the script would run again
-        creates: /usr/local/bin/containerd
+        # wiped on reboot and the script would run again. runc is the last
+        # binary the script fetches, so a silently failed download (e.g. the
+        # GitHub API not returning a release tag) gets retried on the next run
+        creates: /usr/local/sbin/runc
 
-    # the scripts never exit non-zero, so check the result explicitly
+    # the scripts never exit non-zero, so check the result explicitly.
+    # Without runc containerd still runs, but no container can start
+    - name: Check runc is installed
+      ansible.builtin.command: /usr/local/sbin/runc --version
+      changed_when: false
+      check_mode: false
+
     - name: Ensure containerd is running
       ansible.builtin.systemd:
         name: containerd
