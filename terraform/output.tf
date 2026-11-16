@@ -23,6 +23,7 @@ output "hcloud_token" {
 }
 
 # use as kubeadm init --control-plane-endpoint "<ipv4>:6443"; null for exam2
+# (null outputs are left out of `terraform output -json` entirely)
 output "k8s_api_lb" {
   value = local.k8s_api_lb ? {
     ipv4 = hcloud_load_balancer.k8s_api[0].ipv4

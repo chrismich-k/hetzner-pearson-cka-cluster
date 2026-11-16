@@ -4,7 +4,8 @@ k8s cluster setup for {{ tf_out.exam.value }}:
 {{ node }}:
 ssh -i {{ hostvars[node].ansible_ssh_private_key_file | regex_replace('^' ~ lookup('env', 'HOME'), '~') }} {{ course_user }}@{{ hostvars[node].ansible_host }}
 {% endfor %}
-{% if tf_out.k8s_api_lb.value %}
+{# terraform output -json omits null outputs, so k8s_api_lb is missing for exam2 #}
+{% if tf_out.k8s_api_lb is defined and tf_out.k8s_api_lb.value %}
 
 Notes for `Task 1: Configuring a HA cluster`:
 * CRI already installed (no need to run `cka/install-cri.sh`)
