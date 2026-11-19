@@ -4,7 +4,7 @@ hcloud_token = "yoursecrethcloudtoken"
 # ssh_key at Hetzner
 ssh_key_name = "cka-pearson"
 # local path to key
-default_ssh_key_path = "/home/username/.ssh/id_ed25519"
+default_ssh_key_path = "~/.ssh/cka-pearson"
 
 hcloud_network_zone  = "eu-central"
 hcloud_location      = "fsn1"
