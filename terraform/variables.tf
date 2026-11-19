@@ -17,7 +17,7 @@ variable "default_ssh_key_path" {
 variable "hcloud_node_image" {
   type        = string
   description = "default distribution to use for new hcloud nodes"
-  default     = "ubuntu-26.04"
+  default     = "ubuntu-24.04" # ubuntu-26.04 has issues with the course scripts
 }
 
 variable "exam" {

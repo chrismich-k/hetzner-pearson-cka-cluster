@@ -82,6 +82,10 @@ What Ansible then does on every node:
    ```
    <!-- TODO: add the exact error message terraform apply shows when cx23 is unavailable -->
 
+   Keep `hcloud_node_image = "ubuntu-24.04"`. With `ubuntu-26.04` the course scripts currently run into version
+   issues.
+   <!-- TODO: fix or describe a workaround for ubuntu-26.04 -->
+
 
 6. **Choose the exam layout** in `terraform.tfvars`:
    ```hcl

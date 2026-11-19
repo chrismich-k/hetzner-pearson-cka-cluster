@@ -9,7 +9,7 @@ default_ssh_key_path = "/home/username/.ssh/id_ed25519"
 hcloud_network_zone  = "eu-central"
 hcloud_location      = "fsn1"
 server_type          = "cx23" # "cpx22"  # whatever available
-hcloud_node_image    = "ubuntu-26.04"  # distribution to use
+hcloud_node_image    = "ubuntu-24.04"  # distribution to use
 
 # load balancer in front of the kube-apiservers (port 6443)
 # k8s_api_lb_name = "cka-k8s-api"
@@ -18,4 +18,3 @@ hcloud_node_image    = "ubuntu-26.04"  # distribution to use
 # cluster layout from the course: "exam1" (control1-3 + worker1-2, with
 # load balancer) or "exam2" (control + worker1-2), see exams.tf
 exam = "exam1"
-
