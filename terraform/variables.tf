@@ -37,7 +37,7 @@ variable "hcloud_location" {
 }
 
 variable "server_type" {
-  type = string
+  type    = string
   default = "cpx22" # or the cheaper cx23 if available
 }
 
