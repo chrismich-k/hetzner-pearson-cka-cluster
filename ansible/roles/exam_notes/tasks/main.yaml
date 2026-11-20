@@ -3,7 +3,8 @@
 # scripts disagree - for reading on the node while working on the exam
 - name: Copy sample exam notes to course user's home
   ansible.builtin.copy:
-    src: NOTES_SAMPLE_EXAMEN.txt
+    # in the repo root, so it can be read on GitHub without a cluster
+    src: "{{ playbook_dir }}/../NOTES_SAMPLE_EXAMEN.txt"
     dest: "/home/{{ course_user }}/NOTES_SAMPLE_EXAMEN.txt"
     owner: "{{ course_user }}"
     group: "{{ course_user }}"

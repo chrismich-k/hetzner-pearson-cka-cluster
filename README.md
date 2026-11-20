@@ -11,6 +11,9 @@ where the actual exam task begins (`kubeadm init`).
 > **Note:** This project is not affiliated with Pearson, Coursera or the course author. Hetzner servers and load
 > balancers cost money for as long as they exist. Run `terraform destroy` when you are done.
 
+> **Sample exam notes:** [`NOTES_SAMPLE_EXAMEN.txt`](NOTES_SAMPLE_EXAMEN.txt) lists where the sample exam tasks and
+> their grading scripts disagree. Worth a read even if you don't use this project.
+
 ## What you get
 
 Two cluster layouts from the course:
@@ -31,8 +34,8 @@ What Ansible then does on every node:
   password.
 - clones the course repo [sandervanvugt/cka](https://github.com/sandervanvugt/cka) to `/home/student/cka`
 - runs the course setup scripts (container runtime, kubetools)
-- copies `NOTES_SAMPLE_EXAMEN.txt` into the home of `student` on the control nodes. It has notes on the sample exam
-  tasks, mostly where a task and its grading script disagree.
+- copies [`NOTES_SAMPLE_EXAMEN.txt`](NOTES_SAMPLE_EXAMEN.txt) into the home of `student` on the control nodes. It has
+  notes on the sample exam tasks, mostly where a task and its grading script disagree.
 - writes a `README_EXAM-1.txt` or `README_EXAM-2.txt` into the repo root. It contains the SSH logins for every node and
   hints for the first exam task.
 
