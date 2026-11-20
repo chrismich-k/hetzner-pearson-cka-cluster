@@ -4,8 +4,8 @@
 - name: Copy sample exam notes to course user's home
   ansible.builtin.copy:
     # in the repo root, so it can be read on GitHub without a cluster
-    src: "{{ playbook_dir }}/../NOTES_SAMPLE_EXAMEN.txt"
-    dest: "/home/{{ course_user }}/NOTES_SAMPLE_EXAMEN.txt"
+    src: "{{ playbook_dir }}/../NOTES_SAMPLE_EXAMEN.md"
+    dest: "/home/{{ course_user }}/NOTES_SAMPLE_EXAMEN.md"
     owner: "{{ course_user }}"
     group: "{{ course_user }}"
     mode: "0644"
