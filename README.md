@@ -31,6 +31,8 @@ What Ansible then does on every node:
   password.
 - clones the course repo [sandervanvugt/cka](https://github.com/sandervanvugt/cka) to `/home/student/cka`
 - runs the course setup scripts (container runtime, kubetools)
+- copies `NOTES_SAMPLE_EXAMEN.txt` into the home of `student` on the control nodes. It has notes on the sample exam
+  tasks, mostly where a task and its grading script disagree.
 - writes a `README_EXAM-1.txt` or `README_EXAM-2.txt` into the repo root. It contains the SSH logins for every node and
   hints for the first exam task.
 

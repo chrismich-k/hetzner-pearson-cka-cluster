@@ -60,6 +60,13 @@
   roles:
     - role: course_setup_scripts
 
+- name: Copy sample exam notes
+  hosts: control_nodes
+  become: true
+  tags: exam_notes
+  roles:
+    - role: exam_notes
+
 # last, so the README only shows up once the nodes are ready for kubeadm
 - name: Write README with node access
   hosts: localhost

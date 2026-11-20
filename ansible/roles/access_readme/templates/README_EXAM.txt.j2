@@ -24,3 +24,6 @@ Notes for `Task 1: Creating a Cluster`:
 * install cluster on the control node ({{ tf_out.primary_control_node.value }}):
   sudo kubeadm init
 {% endif %}
+
+Notes on the sample exam tasks (where task and grading script disagree):
+~/NOTES_SAMPLE_EXAMEN.txt on the control node{{ 's' if groups['control_nodes'] | length > 1 else '' }}
