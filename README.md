@@ -77,8 +77,8 @@ What Ansible then does on every node:
    ssh-add ~/.ssh/cka-pearson
    ```
 
-5. **Adjust location and server type** (optional). In `terraform.tfvars` you can change `hcloud_network_zone`,
-   `hcloud_location` and `server_type`. Not every server type is available at every location.
+5. **Adjust location and server type** (optional). In `terraform.tfvars` you can change `hcloud_location` and
+   `server_type`. Not every server type is available at every location.
 
    The much cheaper `cx23` (*Cost-Optimized*) is the one you want, but Hetzner doesn't have it available every day.
    If `terraform apply` fails because of that, either try again later or switch to `cpx22` (*Regular Performance*):

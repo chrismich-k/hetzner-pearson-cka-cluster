@@ -23,11 +23,6 @@ locals {
     }
   }
 
-  ## group agent nodes
-  agent_nodes = {
-    for k, v in local.cluster_nodes : k => v if v.role == "agent"
-  }
-
   worker_facts = {
     for k, s in hcloud_server.worker_nodes : k => {
       provider_id = s.id

@@ -20,10 +20,8 @@
     - name: Build control nodes group
       add_host:
         name: "{{ item.key }}"
-        # masters_bootstrap = the one master that starts the embedded-etcd
-        # cluster (cluster-init) and holds k3s_master_alias_ipv4_priv;
-        # masters_join = every other master, which joins through it
-        groups: "{{ ['control_nodes'] + (['control_node_bootstrap'] if item.key == tf_out.primary_control_node.value else ['control_nodes_join']) }}"
+        # control_node_bootstrap = the one control node kubeadm init runs on
+        groups: "{{ ['control_nodes'] + (['control_node_bootstrap'] if item.key == tf_out.primary_control_node.value else []) }}"
         ansible_host: "{{ item.value.ipv4 | default(item.value.ipv6, true) }}"
         ansible_ssh_private_key_file: "{{ item.value.ssh_key_path }}"
         ipv4: "{{ item.value.ipv4 }}"
@@ -31,29 +29,6 @@
         provider_id: "{{ item.value.provider_id }}"
         ansible_user: "root"
       loop: "{{ tf_out.control_nodes.value | dict2items }}"
-
-    # a singleton group - exactly one member - for actions that should run
-    # exactly once per cluster (Helm installs, cluster-wide k8s API
-    # objects) rather than once per master. This repo only ever manages
-    # one cluster per inventory run, deliberately. Note: this must stay a tag
-    # on a real master (reusing its already-correct public ansible_host), never
-    # a synthetic host addressed via k3s_master_alias_ipv4_priv - that
-    # address is private-network-only and unreachable from the Ansible
-    # control machine.
-    #
-    # The member is the current alias-IP holder, NOT groups['masters'][0]
-    # (alphabetically-first) - a real bug surfaced during a holder-failover
-    # test: groups['masters'][0] stays "master-01" by name regardless of
-    # whether that specific host is actually reachable, so once master-01
-    # was powered off (or removed from cluster_nodes entirely), every
-    # "hosts: clusters" play and the coredns-restart handler's
-    # delegate_to started failing outright. The holder is the one
-    # guaranteed to have actually participated in this run (that's what
-    # makes it useful as a join address to begin with).
-    - name: Tag the cluster-representative host (cluster-wide, run-once actions target this group instead of "masters")
-      add_host:
-        name: "{{ tf_out.primary_control_node.value }}"
-        groups: clusters
 
     - name: Build worker nodes group
       add_host:

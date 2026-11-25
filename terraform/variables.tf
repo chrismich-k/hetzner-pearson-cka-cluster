@@ -41,11 +41,6 @@ variable "server_type" {
   default = "cpx22" # or the cheaper cx23 if available
 }
 
-variable "hcloud_network_zone" {
-  type    = string
-  default = "eu-central"
-}
-
 variable "k8s_api_lb_name" {
   type        = string
   description = "name of the Hetzner load balancer in front of the kube-apiservers"

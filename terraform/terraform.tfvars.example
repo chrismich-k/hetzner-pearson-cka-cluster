@@ -6,12 +6,12 @@ ssh_key_name = "cka-pearson"
 # local path to key
 default_ssh_key_path = "~/.ssh/cka-pearson"
 
-hcloud_network_zone = "eu-central"
-hcloud_location     = "fsn1"
-server_type         = "cx23"         # "cpx22"  # whatever available
-hcloud_node_image   = "ubuntu-24.04" # distribution to use
+hcloud_location   = "fsn1"
+server_type       = "cx23"         # "cpx22"  # whatever available
+hcloud_node_image = "ubuntu-24.04" # distribution to use
 
-# load balancer in front of the kube-apiservers (port 6443)
+# load balancer in front of the kube-apiservers (port 6443),
+# only for exam1, defaults shown
 # k8s_api_lb_name = "cka-k8s-api"
 # k8s_api_lb_type = "lb11"
 
