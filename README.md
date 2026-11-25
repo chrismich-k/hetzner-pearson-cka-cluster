@@ -11,7 +11,7 @@ where the actual exam task begins (`kubeadm init`).
 > **Note:** This project is not affiliated with Pearson, Coursera or the course author. Hetzner servers and load
 > balancers cost money for as long as they exist. Run `terraform destroy` when you are done.
 
-> **Sample exam notes:** [`NOTES_SAMPLE_EXAMEN.md`](NOTES_SAMPLE_EXAMEN.md) lists where the sample exam tasks and
+> **Sample exam notes:** [`NOTES_SAMPLE_EXAMS.md`](NOTES_SAMPLE_EXAMS.md) lists where the sample exam tasks and
 > their grading scripts disagree. Worth a read even if you don't use this project.
 
 ## What you get
@@ -36,7 +36,7 @@ What Ansible then does on every node:
 - runs the course setup scripts (container runtime, kubetools)
 
 On the control nodes only, it also:
-- copies [`NOTES_SAMPLE_EXAMEN.md`](NOTES_SAMPLE_EXAMEN.md) into the home of `student`. It has notes on the sample
+- copies [`NOTES_SAMPLE_EXAMS.md`](NOTES_SAMPLE_EXAMS.md) into the home of `student`. It has notes on the sample
   exam tasks, mostly where a task and its grading script disagree.
 
 On your own machine, it:
